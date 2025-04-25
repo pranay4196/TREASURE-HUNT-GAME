@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reshu's Birthday Treasure Hunt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #e63946;
+      --secondary: #f1faee;
+      --accent: #a8dadc;
+      --dark: #1d3557;
+      --light: #ffffff;
+      --gold: #ffd700;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, var(--dark), #2a3a5a);
+      color: var(--light);
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .game-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2.5rem;
+      background: rgba(29, 53, 87, 0.85);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+                  0 0 0 5px var(--primary),
+                  0 0 0 10px rgba(230, 57, 70, 0.3);
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.8s ease-out;
+    }
+    
+    .game-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(230,57,70,0.1) 0%, rgba(0,0,0,0) 70%);
+      transform: rotate(30deg);
+      z-index: -1;
+      animation: shine 8s linear infinite;
+    }
+    
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      text-shadow: 3px 3px 0 var(--dark),
+                   6px 6px 0 rgba(0,0,0,0.2);
+      letter-spacing: 2px;
+      animation: textGlow 2s infinite alternate;
+    }
+    
+    .birthday-header {
+      font-size: 1.8rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+      animation: pulse 2s infinite;
+    }
+    
+    .intro-text {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      color: var(--secondary);
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    }
+    
+    .rules {
+      background: rgba(168, 218, 220, 0.2);
+      border-left: 5px solid var(--primary);
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 0 10px 10px 0;
+      text-align: left;
+      animation: slideIn 0.8s ease-out;
+    }
+    
+    .rules li {
+      margin-bottom: 0.8rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    
+    .rules li::before {
+      content: '🎁';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+    }
+    
+    .narration {
+      font-size: 1.3rem;
+      margin: 1.5rem 0;
+      padding: 1rem;
+      background: rgba(241, 250, 238, 0.1);
+      border-radius: 10px;
+      border-bottom: 3px solid var(--primary);
+      color: var(--accent);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .question {
+      font-size: 1.4rem;
+      margin: 2rem 0;
+      color: var(--secondary);
+      padding: 1rem;
+      background: rgba(29, 53, 87, 0.7);
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      animation: pulse 2s infinite;
+    }
+    
+    input {
+      padding: 1rem;
+      width: 80%;
+      font-size: 1.1rem;
+      margin: 1.5rem auto;
+      border-radius: 10px;
+      border: 3px solid var(--accent);
+      background: rgba(255,255,255,0.9);
+      color: var(--dark);
+      outline: none;
+      transition: all 0.3s;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px var(--primary),
+                  0 0 30px rgba(230, 57, 70, 0.5);
+      transform: scale(1.02);
+    }
+    
+    button {
+      padding: 1rem 2.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(45deg, var(--primary), #ff4d5a);
+      color: var(--light);
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4),
+                  0 0 0 3px var(--accent);
+      margin: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #ff4d5a, var(--primary));
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: -1;
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(230, 57, 70, 0.6),
+                  0 0 0 3px var(--accent);
+    }
+    
+    button:hover::before {
+      opacity: 1;
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    .timer {
+      font-size: 2rem;
+      margin: 1.5rem 0;
+      color: var(--primary);
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(230, 57, 70, 0.7);
+      animation: pulse 1.5s infinite;
+    }
+    
+    .hint {
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin: 1rem 0;
+      font-style: italic;
+      text-shadow: 0 0 5px rgba(168, 218, 220, 0.5);
+      animation: fadeIn 1s ease-in;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    @keyframes textGlow {
+      from { text-shadow: 3px 3px 0 var(--dark), 6px 6px 0 rgba(0,0,0,0.2); }
+      to { text-shadow: 3px 3px 0 var(--dark), 6px 6px 0 rgba(0,0,0,0.2), 0 0 15px var(--primary); }
+    }
+    
+    @keyframes shine {
+      0% { transform: rotate(30deg) translate(-30%, -30%); }
+      100% { transform: rotate(30deg) translate(30%, 30%); }
+    }
+    
+    .confetti {
+      position: fixed;
+      width: 15px;
+      height: 15px;
+      background-color: var(--primary);
+      opacity: 0.8;
+      animation: fall linear forwards;
+    }
+    
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+    
+    .victory {
+      animation: zoomIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    @keyframes zoomIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    
+    .himalayan-img {
+      width: 200px;
+      margin: 1rem auto;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div id="startSection">
+      <div class="birthday-header">🎂 HAPPY BIRTHDAY RESHU! 🎂</div>
+      <h1>Your Special Birthday Hunt</h1>
+      <div class="intro-text">
+        <p>My dearest best friend and future CA partner!</p>
+        <p>On your special day, I've prepared this treasure hunt just for you...</p>
+      </div>
+      
+      <div class="rules">
+        <p><strong>Your Birthday Challenge:</strong></p>
+        <ul>
+          <li>Each level has a question about us and our journey</li>
+          <li>Wrong answer = Back to Start (birthday pressure!)</li>
+          <li>Final levels need a special code to unlock</li>
+          <li>Complete all levels to claim your Himalayan gift!</li>
+          <li>Most importantly - HAVE FUN on your special day!</li>
+        </ul>
+      </div>
+      
+      <p class="intro-text">First, tell me one of my real "characteristics":</p>
+      <p class="hint">Hint: one of mine real "characteristics"</p>
+      <input type="text" id="characterInput" placeholder="Your honest answer here">
+      <button id="startGame">Begin Birthday Adventure!</button>
+    </div>
+
+    <div id="game" class="hidden">
+      <div id="narration" class="narration"></div>
+      <div id="question" class="question"></div>
+      <input type="text" id="answer" placeholder="Type your answer">
+      <div id="timer" class="timer">∞</div>
+      <div id="hint" class="hint"></div>
+      <button id="submit">Submit Answer</button>
+    </div>
+  </div>
+
+  <script>
+    let currentLevel = 0;
+    let timerInterval = null;
+    let passedUnlockCode = false;
+
+    const levels = [
+      {
+        question: "Name the team which got banned for 2 years for foul play or fixing?",
+        answer: ["csk"],
+        narration: "Level 1: Let's start your birthday challenge!",
+        time: 45,
+        hint: null
+      },
+      {
+        question: "What's our go-to phrase when we need to stop each other?",
+        answer: ["disclaimer attached"],
+        narration: "Level 2: Birthday inside joke time!",
+        time: 45,
+        hint: null
+      },
+      {
+        question: "What is my highest score in Jain Championship League (JCL)?",
+        answer: ["30"],
+        narration: "Level 3: Birthday sports memory!",
+        time: 45,
+        hint: "Between 25-35 runs"
+      },
+      {
+        question: "A product passes through Process-1. Input raw material issued were 8,000 units. Normal loss anticipated was 10% of input with realizable value of ₹5 per unit. 7,600 units of output were produced and transferred to the next process. If the total cost incurred under Process-1 was ₹40,000, then the amount of abnormal gain/(loss) is?",
+        answer: ["2000"],
+        narration: "Level 4: Birthday CA knowledge test!",
+        time: 180,
+        hint: null
+      },
+      {
+        question: "Tell me my favorite Naturals ice cream flavor (itna toh pata hi hona chahiye aapko!)",
+        answer: ["roasted almond", "roasted almonds"],
+        narration: "Level 5: Birthday brain freeze time!",
+        time: 45,
+        hint: null
+      },
+      {
+        question: "I'm fluffy and sweet, pink as can be, hard to find, but found by me. What am I?",
+        answer: ["cotton candy"],
+        narration: "Level 6: Birthday riddle break!",
+        time: null,
+        hint: null
+      },
+      {
+        question: "I have kings and queens but no royal decree, Knights that move in an L, yet never flee. A battle of minds, each move is a test, We played before competitions, but you play the best. What's the game?",
+        answer: ["chess"],
+        narration: "Level 7: Birthday strategic thinking!",
+        time: 60,
+        hint: null
+      },
+      {
+        question: "Name the first name of person who did chugli of both of us?",
+        answer: ["priyal"],
+        narration: "Level 8: Birthday nostalgia hitting hard!",
+        time: 90,
+        hint: "CA Foundation days"
+      },
+      {
+        question: "Name one of my bestfriend",
+        answer: ["reshu"],
+        narration: "Level 9: Birthday friendship check!",
+        time: null,
+        hint: null
+      },
+      {
+        question: "Where do we want to celebrate after finally becoming CAs?",
+        answer: ["manali"],
+        narration: "Final Level: Birthday dream destination!",
+        time: null,
+        hint: null
+      }
+    ];
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('startGame').addEventListener('click', startGame);
+      document.getElementById('submit').addEventListener('click', checkAnswer);
+      document.getElementById('answer').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkAnswer();
+      });
+    });
+
+    function startGame() {
+      const characteristic = document.getElementById("characterInput").value.trim().toLowerCase();
+      if (["akdu", "ghamandi", "egoistic", "khadush"].includes(characteristic)) {
+        document.getElementById("startSection").style.display = "none";
+        document.getElementById("game").classList.remove("hidden");
+        loadLevel();
+      } else {
+        alert("Nope! That's not me. Think harder bestie!");
+        document.getElementById("characterInput").value = "";
+        document.getElementById("characterInput").focus();
+      }
+    }
+
+    function loadLevel() {
+      if (currentLevel === 7 && !passedUnlockCode) {
+        const code = prompt(`🎁 BIRTHDAY SPECIAL UNLOCK 🎁\n\nFor your birthday gift, visit these coordinates:\n\n21.182257, 81.268677\n\nEnter the code you find there (write without spaces):`);
+        
+        if (code !== "29042004") {
+          alert("Not quite! The coordinates hold your birthday code!");
+          currentLevel = 0;
+          return loadLevel();
+        }
+        passedUnlockCode = true;
+      }
+
+      if (currentLevel === 8) {
+        const name = prompt("Birthday Special: Name one of my bestfriend:");
+        if (name.toLowerCase() === "reshu") {
+          // Continue to next level
+        } else if (["soumya", "prerna"].includes(name.toLowerCase())) {
+          alert("They're amazing friends, but today is YOUR birthday!");
+          return loadLevel();
+        } else {
+          alert("Hmm... that's not right. Try again birthday girl!");
+          return loadLevel();
+        }
+      }
+
+      const level = levels[currentLevel];
+      document.getElementById("narration").textContent = level.narration;
+      document.getElementById("question").textContent = level.question;
+      document.getElementById("answer").value = "";
+      document.getElementById("answer").focus();
+
+      if (level.hint) {
+        document.getElementById("hint").textContent = "Birthday Hint: " + level.hint;
+      } else {
+        document.getElementById("hint").textContent = "";
+      }
+
+      clearInterval(timerInterval);
+      if (level.time) {
+        let timeLeft = level.time;
+        document.getElementById("timer").textContent = timeLeft;
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          document.getElementById("timer").textContent = timeLeft;
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert("Time's up birthday girl! Back to Level 1!");
+            currentLevel = 0;
+            loadLevel();
+          }
+        }, 1000);
+      } else {
+        document.getElementById("timer").textContent = "∞";
+      }
+    }
+
+    function checkAnswer() {
+      const userAnswer = document.getElementById("answer").value.trim().toLowerCase();
+      const correctAnswers = levels[currentLevel].answer;
+
+      if (correctAnswers.includes(userAnswer)) {
+        const birthdayResponses = [
+          "Perfect! Birthday genius!",
+          "Correct! You're acing your birthday challenge!",
+          "Spot on! Birthday knowledge on point!",
+          "Nailed it! Birthday brain is sharp!"
+        ];
+        alert(birthdayResponses[Math.floor(Math.random() * birthdayResponses.length)]);
+        currentLevel++;
+        
+        if (currentLevel === levels.length) {
+          setTimeout(showVictory, 500);
+        } else {
+          setTimeout(loadLevel, 1000);
+        }
+      } else {
+        alert("Oops! Birthday mistake! Back to Level 1!");
+        currentLevel = 0;
+        loadLevel();
+      }
+    }
+
+    function showVictory() {
+      document.getElementById("game").innerHTML = `
+        <div class="victory">
+          <div class="birthday-header">🎉 HAPPY BIRTHDAY CHAMPION! 🎉</div>
+          <h1 style="color: var(--gold);">You Did It!</h1>
+          
+          <div class="narration" style="font-size: 1.3rem;">
+            <p>My dearest Reshu,</p>
+            <p>You've completed your birthday challenge in true CA style!</p>
+            
+            <div style="background: rgba(255,215,0,0.1); padding: 1rem; border-radius: 10px; margin: 1rem 0;">
+              <p>For your special day, I've brought you something magical...</p>
+              <p style="font-weight: bold; color: var(--gold);">From the majestic mountains of the Himalayan valley</p>
+              <p>From Manali - the place we dream of visiting as CAs!</p>
+            </div>
+            
+            <p>Your special birthday gift code is:</p>
+            <p style="font-size: 2rem; color: var(--gold); font-weight: bold; text-shadow: 0 0 10px rgba(255,215,0,0.7);">KGF</p>
+            <p>Tell Aunty/Didi to get your Himalayan surprise!</p>
+            
+            <p style="margin-top: 2rem;">Wishing you the happiest birthday ever!</p>
+            <p>Your best friend forever,</p>
+            <p style="color: var(--primary); font-weight: bold;">Pranay</p>
+          </div>
+          
+          <button onclick="location.reload()" style="background: linear-gradient(45deg, var(--gold), #ffcc00); font-size: 1.3rem; padding: 1rem 3rem; box-shadow: 0 0 15px rgba(255,215,0,0.5);">Play Again</button>
+        </div>
+      `;
+      
+      // Birthday confetti celebration
+      for(let i = 0; i < 200; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.backgroundColor = [
+            '#e63946', '#f1faee', '#a8dadc', '#ffd700', '#ffbe0b'
+          ][Math.floor(Math.random() * 5)];
+          confetti.style.width = (Math.random() * 15 + 5) + 'px';
+          confetti.style.height = (Math.random() * 15 + 5) + 'px';
+          confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+          document.body.appendChild(confetti);
+          
+          setTimeout(() => {
+            confetti.remove();
+          }, 5000);
+        }, i * 30);
+      }
+    }
+  </script>
+</body>
+</html>
